@@ -1,0 +1,200 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Reportes | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">Reportes</h1>
+
+<p>
+
+    Consultá estadísticas e información del sistema.
+
+</p>
+
+<div class="row">
+
+    <!-- Ventas del día -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <a href="{% url 'gestionComercial:ventasDia' %}"
+           class="text-decoration-none">
+
+            <div class="card border-start border-success border-4 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <div class="col">
+
+                            <div class="text-uppercase text-success small fw-bold">
+
+                                Ventas del día
+
+                            </div>
+
+                            <div class="h5 mb-0 fw-bold text-dark">
+
+                                Ver reporte
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-auto">
+
+                            <i class="fa-solid fa-cash-register fa-2x text-success"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Productos más vendidos -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <a href="{% url 'gestionComercial:productosMasVendidos' %}"
+           class="text-decoration-none">
+
+            <div class="card border-start border-primary border-4 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <div class="col">
+
+                            <div class="text-uppercase text-primary small fw-bold">
+
+                                Productos más vendidos
+
+                            </div>
+
+                            <div class="h5 mb-0 fw-bold text-dark">
+
+                                Ver reporte
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-auto">
+
+                            <i class="fa-solid fa-chart-line fa-2x text-primary"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Stock bajo -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <a href="{% url 'gestionComercial:stockBajo' %}"
+           class="text-decoration-none">
+
+            <div class="card border-start border-danger border-4 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <div class="col">
+
+                            <div class="text-uppercase text-danger small fw-bold">
+
+                                Stock bajo
+
+                            </div>
+
+                            <div class="h5 mb-0 fw-bold text-dark">
+
+                                Ver reporte
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-auto">
+
+                            <i class="fa-solid fa-triangle-exclamation fa-2x text-danger"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- Mejores clientes -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <a href="{% url 'gestionComercial:mejoresClientes' %}"
+           class="text-decoration-none">
+
+            <div class="card border-start border-warning border-4 shadow h-100">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <div class="col">
+
+                            <div class="text-uppercase text-warning small fw-bold">
+
+                                Mejores clientes
+
+                            </div>
+
+                            <div class="h5 mb-0 fw-bold text-dark">
+
+                                Ver reporte
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-auto">
+
+                            <i class="fa-solid fa-users fa-2x text-warning"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

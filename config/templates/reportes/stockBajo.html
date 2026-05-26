@@ -1,0 +1,207 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Stock Bajo | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
+
+<h1 class="mt-4">Stock Bajo</h1>
+
+<p>
+
+    Productos con stock bajo según el límite seleccionado.
+
+</p>
+
+<!-- FILTRO -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <i class="fa-solid fa-filter"></i>
+        Filtro de stock
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="get">
+
+            <div class="row">
+
+                <div class="col-md-8 mb-3">
+
+                    <label class="form-label">
+
+                        Mostrar productos con stock menor o igual a:
+
+                    </label>
+
+                    <input type="number"
+                           name="limite"
+                           class="form-control"
+                           min="0"
+                           placeholder="Ej: 5"
+                           value="{{ limite }}">
+
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end mb-3">
+
+                    <button type="submit"
+                            class="btn btn-danger w-100">
+
+                        <i class="fa-solid fa-filter"></i>
+                        Filtrar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Productos con stock bajo
+
+    </div>
+
+    <div class="card-body">
+
+        <table id="tablaStock"
+               class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for producto in productos %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ producto.id }}
+
+                        </td>
+
+                        <td>
+
+                            {{ producto.nombre }}
+
+                        </td>
+
+                        <td>
+
+                            ${{ producto.precioVenta }}
+
+                        </td>
+
+                        <td>
+
+                            {% if producto.stock <= 2 %}
+
+                                <span class="badge bg-danger">
+
+                                    {{ producto.stock }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    {{ producto.stock }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="4"
+                            class="text-center">
+
+                            No hay productos con stock bajo
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"
+        defer></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tableEl = document.getElementById('tablaStock');
+
+    if (!tableEl) return;
+
+    new simpleDatatables.DataTable(tableEl, {
+
+        searchable: true,
+        sortable: true,
+        fixedHeight: true,
+        perPage: 5,
+        perPageSelect: [5,10,20,50],
+
+        labels: {
+
+            placeholder: "Buscar producto...",
+            perPage: "Productos por página",
+            noRows: "No hay productos",
+            info: "Mostrando {start} a {end} de {rows} productos"
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

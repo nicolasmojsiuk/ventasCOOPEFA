@@ -1,0 +1,495 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Nueva Venta | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">Nueva Venta</h1>
+
+{% if messages %}
+    {% for message in messages %}
+
+        <div class="alert 
+            {% if message.tags == 'error' %}
+                alert-danger
+            {% else %}
+                alert-{{ message.tags }}
+            {% endif %}
+            alert-dismissible fade show">
+
+            {{ message }}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+<p>Registrá una nueva venta en el sistema.</p>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+        <i class="fa-solid fa-cart-shopping"></i>
+        Datos de la venta
+    </div>
+
+    <div class="card-body">
+
+        <form method="post" id="formVenta">
+
+            {% csrf_token %}
+
+            <!-- CLIENTE Y MÉTODO -->
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Buscar cliente
+                    </label>
+
+                    <input
+                        type="text"
+                        id="buscarCliente"
+                        class="form-control"
+                        placeholder="Buscar por nombre o DNI">
+
+                    <div
+                        class="list-group mt-1"
+                        id="listaClientes">
+                    </div>
+
+                    {{ form.cliente }}
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <label class="form-label fw-semibold">
+                        {{ form.metodo_pago.label }}
+                    </label>
+
+                    {{ form.metodo_pago }}
+
+                </div>
+
+            </div>
+
+            <!-- PRODUCTOS -->
+
+            <hr class="my-4">
+
+            <h5 class="mb-3">
+                <i class="fa-solid fa-box"></i>
+                Productos
+            </h5>
+
+            <div class="row g-3 mb-3">
+
+                <div class="col-md-8">
+
+                    <input
+                        type="text"
+                        id="buscarProducto"
+                        class="form-control"
+                        placeholder="Buscar producto por código o nombre">
+
+                    <div
+                        class="list-group mt-1"
+                        id="listaProductos">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TABLA -->
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th>Producto</th>
+                            <th width="120">Cantidad</th>
+                            <th width="160">Precio</th>
+                            <th width="160">Subtotal</th>
+                            <th width="80"></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tablaProductos">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- TOTAL -->
+
+            <div class="row mt-4">
+
+                <div class="col-md-4 ms-auto">
+
+                    <div class="card border-success">
+
+                        <div class="card-body text-end">
+
+                            <h5 class="mb-0">
+
+                                Total:
+                                <span
+                                    class="text-success"
+                                    id="totalVenta">
+
+                                    $0.00
+
+                                </span>
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- INPUT OCULTO -->
+
+            <input
+                type="hidden"
+                name="productos"
+                id="inputProductos">
+
+            <!-- BOTONES -->
+
+            <div class="d-flex gap-2 mt-4">
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar venta
+
+                </button>
+
+                <a
+                    href="{% url 'gestionComercial:nuevaVenta' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+    #id_cliente {
+        display: none;
+    }
+
+    .resultado-hover:hover {
+        cursor: pointer;
+        background-color: #f8f9fa;
+    }
+
+</style>
+
+<script>
+
+    // ───────────────── VARIABLES ─────────────────
+
+    let productosVenta = []
+
+    const buscarClienteInput =
+        document.getElementById('buscarCliente')
+
+    const listaClientes =
+        document.getElementById('listaClientes')
+
+    const clienteSelect =
+        document.getElementById('id_cliente')
+
+    const buscarProductoInput =
+        document.getElementById('buscarProducto')
+
+    const listaProductos =
+        document.getElementById('listaProductos')
+
+    const tablaProductos =
+        document.getElementById('tablaProductos')
+
+    const totalVenta =
+        document.getElementById('totalVenta')
+
+    const inputProductos =
+        document.getElementById('inputProductos')
+
+
+    // ───────────────── CLIENTES ─────────────────
+
+    buscarClienteInput.addEventListener(
+        'keyup',
+        async function() {
+
+            const q = this.value
+
+            if (q.length < 2) {
+                listaClientes.innerHTML = ''
+                return
+            }
+
+            const response = await fetch(
+                `/gestionComercial/api/clientes/?q=${q}`
+            )
+
+            const clientes = await response.json()
+
+            listaClientes.innerHTML = ''
+
+            clientes.forEach(cliente => {
+
+                listaClientes.innerHTML += `
+
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action resultado-hover"
+                        onclick="seleccionarCliente(
+                            '${cliente.id}',
+                            '${cliente.nombre}',
+                            '${cliente.dni}'
+                        )">
+
+                        ${cliente.nombre} - DNI: ${cliente.dni}
+
+                    </button>
+
+                `
+            })
+        }
+    )
+
+    function seleccionarCliente(
+        id,
+        nombre,
+        dni
+    ) {
+
+        clienteSelect.innerHTML =
+            `<option value="${id}" selected>
+                ${nombre}
+            </option>`
+
+        buscarClienteInput.value =
+            `${nombre} - DNI ${dni}`
+
+        listaClientes.innerHTML = ''
+    }
+
+
+    // ───────────────── PRODUCTOS ─────────────────
+
+    buscarProductoInput.addEventListener(
+        'keyup',
+        async function() {
+
+            const q = this.value
+
+            if (q.length < 2) {
+
+                listaProductos.innerHTML = ''
+                return
+            }
+
+            const response = await fetch(
+                `/gestionComercial/api/productos/?q=${q}`
+            )
+
+            const productos = await response.json()
+
+            listaProductos.innerHTML = ''
+
+            productos.forEach(producto => {
+
+                listaProductos.innerHTML += `
+
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action resultado-hover"
+                        onclick='agregarProducto(
+                            ${JSON.stringify(producto)}
+                        )'>
+
+                        ${producto.codigo}
+                        -
+                        ${producto.nombre}
+                        -
+                        $${producto.precio}
+
+                    </button>
+
+                `
+            })
+        }
+    )
+
+
+    // ───────────────── AGREGAR PRODUCTOS ─────────────────
+
+    function agregarProducto(producto) {
+
+        const existe = productosVenta.find(
+            p => p.producto == producto.id
+        )
+
+        if (existe) {
+
+            existe.cantidad += 1
+
+        } else {
+
+            productosVenta.push({
+
+                producto: producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                cantidad: 1
+            })
+        }
+
+        renderTabla()
+
+        buscarProductoInput.value = ''
+        listaProductos.innerHTML = ''
+    }
+
+
+    // ───────────────── RENDER TABLA ─────────────────
+
+    function renderTabla() {
+
+        tablaProductos.innerHTML = ''
+
+        let total = 0
+
+        productosVenta.forEach((item, index) => {
+
+            const subtotal =
+                item.precio * item.cantidad
+
+            total += subtotal
+
+            tablaProductos.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        ${item.nombre}
+
+                    </td>
+
+                    <td>
+
+                        <input
+                            type="number"
+                            min="1"
+                            value="${item.cantidad}"
+                            class="form-control"
+                            onchange="cambiarCantidad(
+                                ${index},
+                                this.value
+                            )">
+
+                    </td>
+
+                    <td>
+
+                        $${item.precio.toFixed(2)}
+
+                    </td>
+
+                    <td>
+
+                        $${subtotal.toFixed(2)}
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-sm"
+                            onclick="eliminarProducto(${index})">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `
+        })
+
+        totalVenta.textContent =
+            `$${total.toFixed(2)}`
+
+        inputProductos.value =
+            JSON.stringify(productosVenta)
+    }
+
+
+    // ───────────────── CANTIDAD ─────────────────
+
+    function cambiarCantidad(index, cantidad) {
+
+        cantidad = parseInt(cantidad)
+
+        if (cantidad < 1) {
+            cantidad = 1
+        }
+
+        productosVenta[index].cantidad =
+            cantidad
+
+        renderTabla()
+    }
+
+
+    // ───────────────── ELIMINAR ─────────────────
+
+    function eliminarProducto(index) {
+
+        productosVenta.splice(index, 1)
+
+        renderTabla()
+    }
+
+</script>
+
+{% endblock %}

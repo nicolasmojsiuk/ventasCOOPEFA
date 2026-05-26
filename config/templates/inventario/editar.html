@@ -1,0 +1,253 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Modificar Producto | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">Modificar Producto</h1>
+
+<p>
+    Editá los datos del producto.
+</p>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <i class="fa-solid fa-pen"></i>
+
+        Datos del producto
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="post" novalidate>
+
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div class="row g-3">
+
+                <!-- CÓDIGO -->
+
+                <div class="col-md-3">
+
+                    <label class="form-label fw-semibold">
+
+                        {{ form.codigo.label }}
+
+                    </label>
+
+                    {{ form.codigo }}
+
+                    {% if form.codigo.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.codigo.errors|join:", " }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- NOMBRE -->
+
+                <div class="col-md-5">
+
+                    <label class="form-label fw-semibold">
+
+                        {{ form.nombre.label }}
+
+                    </label>
+
+                    {{ form.nombre }}
+
+                    {% if form.nombre.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.nombre.errors|join:", " }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- PRECIO -->
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-semibold">
+
+                        {{ form.precioVenta.label }}
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+
+                            $
+
+                        </span>
+
+                        {{ form.precioVenta }}
+
+                    </div>
+
+                    {% if form.precioVenta.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.precioVenta.errors|join:", " }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- CONTROLA STOCK -->
+
+                <div class="col-12">
+
+                    <div class="form-check form-switch">
+
+                        {{ form.controlaStock }}
+
+                        <label class="form-check-label fw-semibold">
+
+                            {{ form.controlaStock.label }}
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- STOCK -->
+
+                <div
+                    class="col-md-4"
+                    id="bloque-stock">
+
+                    <label class="form-label fw-semibold">
+
+                        {{ form.stock.label }}
+
+                    </label>
+
+                    {{ form.stock }}
+
+                    {% if form.stock.errors %}
+
+                        <div class="text-danger small mt-1">
+
+                            {{ form.stock.errors|join:", " }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- ACTIVO -->
+
+                <div class="col-12">
+
+                    <div class="form-check">
+
+                        {{ form.activo }}
+
+                        <label class="form-check-label fw-semibold">
+
+                            {{ form.activo.label }}
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="d-flex gap-2 mt-4">
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Guardar cambios
+
+                </button>
+
+                <a
+                    href="{% url 'gestionComercial:listaProductos' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        const controlaStock =
+            document.getElementById(
+                'id_controlaStock'
+            )
+
+        const bloqueStock =
+            document.getElementById(
+                'bloque-stock'
+            )
+
+        function actualizarStock() {
+
+            if (controlaStock.checked) {
+
+                bloqueStock.style.display = ''
+
+            } else {
+
+                bloqueStock.style.display = 'none'
+
+            }
+        }
+
+        controlaStock.addEventListener(
+            'change',
+            actualizarStock
+        )
+
+        actualizarStock()
+
+    }
+)
+
+</script>
+
+{% endblock %}

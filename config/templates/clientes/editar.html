@@ -1,0 +1,126 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Modificar Cliente | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">Modificar Cliente</h1>
+
+<p>Editá los datos del cliente.</p>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <i class="fa-solid fa-user-pen"></i>
+        Datos del cliente
+
+    </div>
+
+    <div class="card-body">
+
+        <form method="post" novalidate>
+
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+            <div class="row g-3">
+
+                <!-- Nombre -->
+                <div class="col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        {{ form.nombre.label }}
+                    </label>
+
+                    {{ form.nombre }}
+
+                    {% if form.nombre.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.nombre.errors|join:", " }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- DNI -->
+                <div class="col-md-3">
+
+                    <label class="form-label fw-semibold">
+                        {{ form.dni.label }}
+                    </label>
+
+                    {{ form.dni }}
+
+                    {% if form.dni.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.dni.errors|join:", " }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- Teléfono -->
+                <div class="col-md-3">
+
+                    <label class="form-label fw-semibold">
+                        {{ form.telefono.label }}
+                    </label>
+
+                    {{ form.telefono }}
+
+                    {% if form.telefono.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.telefono.errors|join:", " }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- Activo -->
+                <div class="col-12">
+
+                    <div class="form-check">
+
+                        {{ form.activo }}
+
+                        <label class="form-check-label fw-semibold">
+                            {{ form.activo.label }}
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex gap-2 mt-4">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar cambios
+
+                </button>
+
+                <a href="{% url 'gestionComercial:listaClientes' %}"
+                   class="btn btn-outline-secondary">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

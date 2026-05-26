@@ -1,0 +1,412 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}Caja | Venta Fácil{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
+
+<h1 class="mt-4">Cierre de Caja</h1>
+
+<p>
+
+    Cierre de caja del día.
+
+</p>
+
+<!-- RESUMEN -->
+
+<div class="row mb-4">
+
+    <!-- TOTAL GENERAL -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <div class="card border-start border-success border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-success small fw-bold">
+
+                            Total vendido
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            ${{ total_general }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-dollar-sign fa-2x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CANTIDAD VENTAS -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <div class="card border-start border-primary border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-primary small fw-bold">
+
+                            Cantidad ventas
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            {{ cantidad_ventas }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-cart-shopping fa-2x text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EFECTIVO -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <div class="card border-start border-dark border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-dark small fw-bold">
+
+                            Efectivo
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            ${{ efectivo }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-money-bill-wave fa-2x text-dark"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DÉBITO -->
+
+    <div class="col-xl-3 col-md-6 mb-4">
+
+        <div class="card border-start border-info border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-info small fw-bold">
+
+                            Débito
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            ${{ debito }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-credit-card fa-2x text-info"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mb-4">
+
+    <!-- CRÉDITO -->
+
+    <div class="col-xl-6 col-md-6 mb-4">
+
+        <div class="card border-start border-warning border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-warning small fw-bold">
+
+                            Crédito
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            ${{ credito }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-credit-card fa-2x text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TRANSFERENCIA -->
+
+    <div class="col-xl-6 col-md-6 mb-4">
+
+        <div class="card border-start border-secondary border-4 shadow h-100">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col">
+
+                        <div class="text-uppercase text-secondary small fw-bold">
+
+                            Transferencia
+
+                        </div>
+
+                        <div class="h4 mb-0 fw-bold text-dark">
+
+                            ${{ transferencia }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <i class="fa-solid fa-building-columns fa-2x text-secondary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <i class="fa-solid fa-receipt"></i>
+        Ventas del día
+
+    </div>
+
+    <div class="card-body">
+
+        <table id="tablaCaja"
+               class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Método</th>
+                    <th>Total</th>
+                    <th>Usuario</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for venta in ventas %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="badge bg-dark">
+
+                                #{{ venta.id }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ venta.fecha|date:"d/m/Y H:i" }}
+
+                        </td>
+
+                        <td>
+
+                            {{ venta.cliente.nombre }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-primary">
+
+                                {{ venta.get_metodo_pago_display }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                ${{ venta.total }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ venta.usuario.username }}
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="text-center">
+
+                            No hay ventas registradas hoy
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.js"></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tabla = document.getElementById('tablaCaja');
+
+    if (!tabla) return;
+
+    new simpleDatatables.DataTable(tabla, {
+
+        searchable: true,
+        sortable: true,
+        fixedHeight: true,
+        perPage: 5,
+        perPageSelect: [5,10,20,50],
+
+        labels: {
+
+            placeholder: "Buscar venta...",
+            perPage: "Ventas por página",
+            noRows: "No hay ventas",
+            info: "Mostrando {start} a {end} de {rows} ventas"
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
